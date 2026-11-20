@@ -1,0 +1,2548 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="narrative">
+  <meta name="design-style" content="showroom">
+  <title>দেনা-পাওনা — কে কত দেবে, কার কাছে কত পাওনা?</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js" defer></script>
+
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* 1. Showroom palette & surface tokens */
+      --background: #fbfbfd;
+      --surface-container-low: #f5f5f7;
+      --surface-container: #e8e8ed;
+      --surface-container-high: #dcdce1;
+
+      /* Ink */
+      --on-surface: #1d1d1f;
+      --on-surface-variant: #6e6e73;
+
+      /* Rules */
+      --outline: #d2d2d7;
+      --outline-variant: #e5e5ea;
+
+      /* Accents */
+      --primary: #006bd6;
+      --primary-hover: #0058b0;
+      --on-primary: #ffffff;
+      --primary-container: #e8f1fd;
+      --on-primary-container: #0058b0;
+      --secondary: #bf4800;
+      --tertiary: #1d1d1f;
+      --error: #d70015;
+      --on-error: #ffffff;
+
+      /* Data series */
+      --data-1: #006bd6;
+      --data-2: #bf4800;
+      --data-3: #248a3d;
+      --data-4: #8944ab;
+      --data-context: #aeaeb2;
+
+      /* Fonts (Noto Sans Bengali first for Bangla script) */
+      --font-headline: 'Noto Sans Bengali', 'Inter Tight', sans-serif;
+      --font-body: 'Noto Sans Bengali', 'Inter', sans-serif;
+      --font-label: 'Noto Sans Bengali', 'Inter', sans-serif;
+
+      /* Shape */
+      --rounded: 9999px;
+      --rounded-md: 0.75rem;
+      --rounded-lg: 1.25rem;
+      --rounded-device: 2.5rem;
+      --rounded-screen: 1.85rem;
+      --rounded-full: 9999px;
+
+      /* Style effects */
+      --headline-tracking: 0;
+      --figure-tracking: -0.02em;
+      --tile-shadow-hover: 0 8px 28px rgb(0 0 0 / 0.08);
+      --device-shadow: 0 24px 64px rgb(29 29 31 / 0.14);
+      --device-shell: #1d1d1f;
+      --device-bezel: #2c2c2e;
+      --device-screen: #fbfbfd;
+      --chevron: " \203A";
+
+      /* 3. Shared semantic & scale tokens */
+      --positive: #248a3d;
+      --positive-container: #e8f5ec;
+      --on-positive-container: #18642b;
+      --warning: #bf4800;
+      --warning-container: #fdf0e6;
+      --on-warning-container: #8f3600;
+      --error-container: #fdebec;
+      --on-error-container: #a80010;
+      --focus: #006bd6;
+
+      /* Type scale (Narrative) */
+      --display-size: clamp(2.5rem, 1.5rem + 3.8vw, 4.25rem);
+      --headline-size: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
+      --subhead-size: clamp(1.1875rem, 1.05rem + 0.55vw, 1.45rem);
+      --body-size: clamp(1rem, 0.96rem + 0.22vw, 1.125rem);
+      --label-size: clamp(0.75rem, 0.72rem + 0.12vw, 0.8125rem);
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 5.5rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; overflow-x: clip; }
+    body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { position: static !important; }
+    button, input, select, textarea { font-family: inherit; }
+
+    .page-grid {
+      display: grid;
+      gap: var(--space-lg);
+      padding-inline: var(--space-lg);
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Focus visibility */
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Top bar (static editorial header) */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+    .brand-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--on-surface);
+      text-decoration: none;
+    }
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: var(--on-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.05rem;
+      flex-shrink: 0;
+    }
+    .top-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+      flex-wrap: wrap;
+    }
+    .top-nav a {
+      color: var(--on-surface-variant);
+      text-decoration: none;
+      font-size: var(--label-size);
+      font-weight: 500;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      transition: color var(--dur-short) var(--ease-out);
+    }
+    .top-nav a:hover { color: var(--primary); }
+
+    /* Tonal section bands */
+    .band { padding-block: var(--space-2xl); }
+    .band.hero-band { padding-block: var(--space-xl) var(--space-2xl); }
+    .band.alt { background: var(--surface-container-low); }
+    .band.alt .tile { background: var(--background); }
+
+    /* Treatment 1: Centered headline stack */
+    .headline-stack {
+      text-align: center;
+      padding-block: var(--space-md) var(--space-xl);
+    }
+    .eyebrow {
+      display: inline-block;
+      color: var(--secondary);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      margin-bottom: var(--space-sm);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .headline-stack h1 {
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 800;
+      line-height: 1.12;
+      margin: 0;
+      color: var(--on-surface);
+      letter-spacing: var(--headline-tracking);
+    }
+    .headline-stack h2 {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 700;
+      line-height: 1.18;
+      margin: 0;
+      color: var(--on-surface);
+      letter-spacing: var(--headline-tracking);
+    }
+    .tagline-bn {
+      font-family: var(--font-headline);
+      font-size: clamp(1.35rem, 1.1rem + 1.1vw, 1.95rem);
+      font-weight: 700;
+      color: var(--primary);
+      margin: var(--space-sm) auto 0;
+      line-height: 1.3;
+    }
+    .tagline-en {
+      font-family: 'Inter Tight', 'Inter', sans-serif;
+      font-size: clamp(0.95rem, 0.9rem + 0.25vw, 1.125rem);
+      font-weight: 600;
+      color: var(--on-surface-variant);
+      margin: var(--space-xs) auto 0;
+      letter-spacing: -0.01em;
+    }
+    .headline-stack .lede {
+      color: var(--on-surface-variant);
+      max-width: 58ch;
+      margin: var(--space-md) auto 0;
+      font-size: var(--subhead-size);
+      line-height: 1.55;
+    }
+
+    /* Treatment 3: Pill action with chevron link */
+    .cta-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-lg);
+      flex-wrap: wrap;
+      margin-top: var(--space-lg);
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.95rem;
+      line-height: 1;
+      padding: 0.875rem var(--space-xl);
+      min-height: 44px;
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      text-decoration: none;
+      transition: background-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-secondary {
+      background: var(--surface-container);
+      color: var(--on-surface);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.9rem;
+      line-height: 1;
+      padding: 0.75rem var(--space-lg);
+      min-height: 44px;
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      transition: background-color var(--dur-short) var(--ease-out);
+    }
+    .btn-secondary:hover { background: var(--surface-container-high); }
+
+    .link-more {
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      background: transparent;
+      border: 0;
+      padding: var(--space-xs) var(--space-sm);
+    }
+    .link-more::after { content: var(--chevron); margin-left: 0.2em; }
+    .link-more:hover { text-decoration: underline; }
+
+    /* Treatment 2: Borderless rounded tiles */
+    .tile {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xl) var(--space-lg);
+      border: 0;
+    }
+    .tile.interactive {
+      transition: box-shadow var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out);
+      cursor: pointer;
+    }
+    .tile.interactive:hover {
+      box-shadow: var(--tile-shadow-hover);
+      transform: translateY(-2px);
+    }
+    .tile.figure { text-align: center; }
+    .tile.figure .label {
+      color: var(--on-surface-variant);
+      font-size: var(--label-size);
+      font-weight: 500;
+    }
+    .tile.figure .value {
+      font-family: var(--font-headline);
+      font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.35rem);
+      font-weight: 700;
+      letter-spacing: var(--figure-tracking);
+      line-height: 1.15;
+      margin-block: var(--space-xs);
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+    }
+    .tile.figure .caption {
+      color: var(--on-surface-variant);
+      font-size: var(--label-size);
+      font-weight: 500;
+    }
+
+    /* Interactive Phone Showcase Stage */
+    .showcase-stage {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: var(--space-2xl);
+      align-items: start;
+      margin-top: var(--space-md);
+    }
+    .flow-selector-col {
+      display: grid;
+      gap: var(--space-md);
+    }
+    .flow-step-card {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      text-align: left;
+      border: 0;
+      cursor: pointer;
+      width: 100%;
+      display: grid;
+      gap: var(--space-xs);
+      transition: background-color var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out);
+    }
+    .flow-step-card:hover {
+      box-shadow: var(--tile-shadow-hover);
+    }
+    .flow-step-card.is-active {
+      background: var(--primary-container);
+    }
+    .flow-step-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+    .flow-step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--background);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+    }
+    .flow-step-card.is-active .flow-step-badge {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .flow-step-title {
+      font-family: var(--font-headline);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      margin: var(--space-xs) 0 0;
+    }
+    .flow-step-desc {
+      margin: 0;
+      color: var(--on-surface-variant);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .flow-step-card.is-active .flow-step-desc {
+      color: var(--on-surface);
+    }
+
+    /* Live sync telemetry strip under flow cards */
+    .live-sync-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-sm);
+      margin-top: var(--space-sm);
+    }
+    .sync-mini-tile {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-md);
+      padding: var(--space-md) var(--space-sm);
+      text-align: center;
+    }
+    .sync-mini-tile .sync-label {
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      display: block;
+    }
+    .sync-mini-tile .sync-val {
+      font-family: var(--font-headline);
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+      margin-top: var(--space-xs);
+      display: block;
+    }
+
+    /* Digitized Smartphone Hardware Frame (Zero photos, crisp vector UI) */
+    .device-stage {
+      display: flex;
+      justify-content: center;
+    }
+    .phone-frame {
+      width: 100%;
+      max-width: 390px;
+      background: var(--device-shell);
+      border-radius: var(--rounded-device);
+      padding: 12px;
+      box-shadow: var(--device-shadow);
+      position: relative;
+    }
+    .phone-screen {
+      background: var(--device-screen);
+      border-radius: var(--rounded-screen);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 670px;
+      border: 1px solid var(--device-bezel);
+    }
+    .phone-status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-sm) var(--space-md) var(--space-xs);
+      background: var(--background);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--on-surface);
+      font-variant-numeric: tabular-nums;
+    }
+    .phone-notch {
+      width: 96px;
+      height: 20px;
+      background: var(--device-shell);
+      border-radius: var(--rounded);
+      margin: 0 auto;
+    }
+    .phone-app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--background);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+    .phone-app-title {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--on-surface);
+    }
+    .phone-app-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: var(--on-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+    .lang-switch {
+      display: inline-flex;
+      background: var(--surface-container);
+      border-radius: var(--rounded);
+      padding: 3px;
+      gap: 2px;
+    }
+    .lang-switch button {
+      border: 0;
+      background: transparent;
+      color: var(--on-surface);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: var(--rounded);
+      cursor: pointer;
+      min-height: 28px;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .lang-switch button.active {
+      background: var(--background);
+      color: var(--primary);
+    }
+
+    .phone-body {
+      flex: 1;
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      background: var(--surface-container-low);
+      overflow-y: auto;
+      max-height: 515px;
+    }
+    .phone-panel { display: none; flex-direction: column; gap: var(--space-sm); }
+    .phone-panel.active { display: flex; }
+
+    /* Inside-phone UI components */
+    .app-hero-card {
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      padding: var(--space-md);
+    }
+    .app-hero-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+    .app-hero-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+    .app-hero-amount {
+      font-family: var(--font-headline);
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--on-surface);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.15;
+      margin-top: 2px;
+    }
+    .app-alert-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-xs);
+      margin-top: var(--space-sm);
+      padding: var(--space-xs) var(--space-sm);
+      background: var(--warning-container);
+      color: var(--on-warning-container);
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .app-add-btn {
+      background: var(--primary);
+      color: var(--on-primary);
+      border: 0;
+      border-radius: var(--rounded);
+      padding: 0 var(--space-sm);
+      min-height: 34px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .app-add-btn:hover { background: var(--primary-hover); }
+
+    .app-filter-row {
+      display: flex;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+    .app-chip {
+      border: 0;
+      background: var(--background);
+      color: var(--on-surface-variant);
+      border-radius: var(--rounded);
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 32px;
+    }
+    .app-chip.active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    .app-inline-form {
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      padding: var(--space-sm) var(--space-md);
+      display: none;
+      gap: var(--space-xs);
+    }
+    .app-inline-form.open { display: grid; }
+    .app-field-label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+      margin-bottom: 2px;
+    }
+    .app-input {
+      width: 100%;
+      border: 1px solid var(--outline);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 0.82rem;
+      background: var(--background);
+      color: var(--on-surface);
+    }
+    .app-input:focus {
+      outline: 2px solid var(--focus);
+      border-color: var(--primary);
+    }
+
+    .app-row-card {
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      padding: var(--space-sm) var(--space-md);
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .app-row-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+    .shop-ident {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      min-width: 0;
+    }
+    .shop-monogram {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--surface-container-low);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .shop-name {
+      font-weight: 700;
+      font-size: 0.86rem;
+      color: var(--on-surface);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .shop-meta {
+      font-size: 0.72rem;
+      color: var(--on-surface-variant);
+    }
+    .shop-amount-col {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .shop-amount {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 0.92rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: var(--rounded);
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+    .status-pill.overdue {
+      background: var(--error-container);
+      color: var(--on-error-container);
+    }
+    .status-pill.due-soon {
+      background: var(--warning-container);
+      color: var(--on-warning-container);
+    }
+    .status-pill.ok {
+      background: var(--positive-container);
+      color: var(--on-positive-container);
+    }
+    .status-pill.info {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    .app-row-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-xs);
+      padding-top: var(--space-xs);
+      border-top: 1px solid var(--outline-variant);
+    }
+    .mini-action-btn {
+      border: 0;
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-radius: var(--rounded);
+      padding: 5px 10px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-height: 28px;
+    }
+    .mini-action-btn:hover { background: var(--primary); color: var(--on-primary); }
+    .mini-action-btn.done {
+      background: var(--positive-container);
+      color: var(--on-positive-container);
+    }
+    .mini-action-btn.neutral {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+    }
+
+    /* Reminder preview drawer inside phone */
+    .reminder-drawer {
+      background: var(--primary-container);
+      border-radius: 10px;
+      padding: var(--space-sm);
+      display: grid;
+      gap: var(--space-xs);
+      font-size: 0.75rem;
+      color: var(--on-surface);
+    }
+    .reminder-msg-box {
+      background: var(--background);
+      border-radius: 8px;
+      padding: var(--space-xs) var(--space-sm);
+      font-size: 0.75rem;
+      line-height: 1.45;
+      color: var(--on-surface);
+    }
+    .reminder-btns {
+      display: flex;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+
+    /* Forecast SVG bar chart inside phone */
+    .forecast-chart-wrap {
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      padding: var(--space-sm) var(--space-md);
+    }
+    .forecast-legend {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      font-size: 0.72rem;
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-xs);
+    }
+    .legend-pair {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+    .swatch-in { background: var(--data-1); }
+    .swatch-out { background: var(--data-2); }
+
+    .week-bars-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-xs);
+      align-items: end;
+      min-height: 130px;
+      padding-top: var(--space-sm);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+    .week-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 8px;
+      border: 0;
+      background: transparent;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .week-col.selected { background: var(--surface-container-low); }
+    .bar-pair {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 92px;
+    }
+    .vbar {
+      width: 14px;
+      border-radius: 4px 4px 0 0;
+      transition: height var(--dur-short) var(--ease-out);
+    }
+    .vbar.in { background: var(--data-1); }
+    .vbar.out { background: var(--data-2); }
+    .week-col-lbl {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+    .week-col.selected .week-col-lbl { color: var(--primary); }
+
+    .phone-bottom-nav {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      background: var(--background);
+      border-top: 1px solid var(--outline-variant);
+      padding: var(--space-xs) var(--space-sm);
+    }
+    .phone-tab-btn {
+      border: 0;
+      background: transparent;
+      color: var(--on-surface-variant);
+      padding: 6px 4px;
+      min-height: 44px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+    .phone-tab-btn.active { color: var(--primary); }
+
+    /* Band 2: 3-Screen Digitized Flow Gallery */
+    .card-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+    .flow-gallery-tile {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+    .mini-ui-wireframe {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-md);
+      padding: var(--space-md);
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .mini-ui-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--on-surface);
+      padding-bottom: var(--space-xs);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+    .mini-ui-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--background);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Band 3: Digital Ad Specimen Section */
+    .ad-switcher {
+      display: flex;
+      justify-content: center;
+      margin-bottom: var(--space-xl);
+    }
+    .segmented-track {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: var(--surface-container);
+      border-radius: var(--rounded);
+      padding: 4px;
+      gap: 4px;
+    }
+    .segmented-btn {
+      border: 0;
+      background: transparent;
+      color: var(--on-surface);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      font-size: var(--label-size);
+      font-weight: 600;
+      min-height: 40px;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .segmented-btn.active {
+      background: var(--background);
+      color: var(--primary);
+    }
+
+    .ad-showcase-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: var(--space-xl);
+      align-items: stretch;
+    }
+    .ad-specimen-canvas {
+      background: var(--tertiary);
+      color: var(--background);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xl);
+      display: grid;
+      gap: var(--space-lg);
+      align-content: space-between;
+    }
+    .ad-specimen-canvas.format-whatsapp {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+    }
+    .ad-specimen-canvas.format-flyer {
+      background: var(--primary-container);
+      color: var(--on-surface);
+    }
+    .ad-top-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      font-size: var(--label-size);
+      font-weight: 600;
+    }
+    .ad-channel-tag {
+      background: var(--primary);
+      color: var(--on-primary);
+      padding: 4px 12px;
+      border-radius: var(--rounded);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .ad-headline-copy {
+      font-family: var(--font-headline);
+      font-size: clamp(1.85rem, 1.4rem + 1.8vw, 2.75rem);
+      font-weight: 800;
+      line-height: 1.12;
+      margin: 0;
+    }
+    .ad-sub-copy {
+      font-family: 'Inter Tight', 'Inter', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: var(--space-xs) 0 0;
+      opacity: 0.9;
+    }
+    .ad-body-copy {
+      margin: var(--space-sm) 0 0;
+      font-size: 1rem;
+      line-height: 1.55;
+      opacity: 0.92;
+      max-width: 50ch;
+    }
+    .ad-ui-preview-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-sm);
+    }
+    .ad-ui-pill-card {
+      background: var(--background);
+      color: var(--on-surface);
+      border-radius: var(--rounded-md);
+      padding: var(--space-md) var(--space-sm);
+      display: grid;
+      gap: 4px;
+    }
+    .ad-ui-pill-card .mini-k {
+      font-size: 0.72rem;
+      color: var(--on-surface-variant);
+      font-weight: 600;
+    }
+    .ad-ui-pill-card .mini-v {
+      font-family: var(--font-headline);
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+    }
+    .ad-specimen-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--outline-variant);
+    }
+
+    .ad-specs-panel {
+      display: grid;
+      gap: var(--space-md);
+      align-content: start;
+    }
+    .spec-item {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-md);
+      padding: var(--space-md) var(--space-lg);
+    }
+    .spec-label {
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--secondary);
+      display: block;
+      margin-bottom: var(--space-xs);
+    }
+    .spec-val {
+      margin: 0;
+      color: var(--on-surface);
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    /* Band 4: Comparison Grid */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+    .compare-tile {
+      display: grid;
+      gap: var(--space-sm);
+      align-content: start;
+    }
+    .compare-before {
+      color: var(--on-surface-variant);
+      font-size: var(--label-size);
+      font-weight: 600;
+      padding-bottom: var(--space-xs);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+    .compare-after {
+      font-family: var(--font-headline);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      margin: 0;
+    }
+
+    /* Band 5: Pricing Tiers */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+      gap: var(--space-lg);
+      align-items: stretch;
+    }
+    .pricing-tile {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-lg);
+    }
+    .pricing-tile.featured {
+      background: var(--primary-container);
+    }
+    .pricing-tile.is-selected {
+      box-shadow: 0 0 0 3px var(--primary);
+    }
+    .tier-header {
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .tier-badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-xs);
+    }
+    .tier-name {
+      font-family: var(--font-headline);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0;
+    }
+    .tier-tag {
+      background: var(--primary);
+      color: var(--on-primary);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: var(--rounded);
+    }
+    .tier-price {
+      font-family: var(--font-headline);
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: var(--figure-tracking);
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+      margin-top: var(--space-xs);
+    }
+    .tier-period {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--on-surface-variant);
+    }
+    .tier-features {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .tier-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-xs);
+      font-size: 0.92rem;
+      color: var(--on-surface);
+    }
+    .tier-features .check-icon {
+      color: var(--positive);
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    /* Band 6: Interactive Trial CTA Configurator */
+    .trial-container {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    .trial-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-md);
+      align-items: end;
+    }
+    .field-group {
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .field-label {
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+    .field-input, .field-select {
+      width: 100%;
+      min-height: 46px;
+      padding: 0.65rem var(--space-md);
+      border-radius: var(--rounded-md);
+      border: 1px solid var(--outline);
+      background: var(--background);
+      color: var(--on-surface);
+      font-size: 0.95rem;
+    }
+    .field-select { padding-right: 2.25rem; }
+    .field-input:focus, .field-select:focus {
+      outline: 3px solid var(--focus);
+      outline-offset: 1px;
+      border-color: var(--primary);
+    }
+    .trial-submit-row {
+      margin-top: var(--space-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+    .inline-feedback {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--error);
+      min-height: 1.4em;
+    }
+    .trial-result-card {
+      margin-top: var(--space-lg);
+      background: var(--primary-container);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: none;
+      gap: var(--space-md);
+    }
+    .trial-result-card.visible { display: grid; }
+    .trial-result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+    .trial-checklist {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+      gap: var(--space-sm);
+    }
+    .trial-check-box {
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      padding: var(--space-md);
+      font-size: 0.88rem;
+    }
+
+    /* Footer */
+    .site-footer {
+      padding-block: var(--space-xl);
+      border-top: 1px solid var(--outline-variant);
+      text-align: center;
+      color: var(--on-surface-variant);
+      font-size: var(--label-size);
+    }
+    .site-footer p { margin: var(--space-xs) auto; max-width: 65ch; }
+
+    /* Container queries for adaptive cards */
+    .card-wrapper { container-type: inline-size; }
+    @container (max-width: 360px) {
+      .ad-ui-preview-strip { grid-template-columns: 1fr; }
+    }
+
+    /* Scroll reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out);
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive breakpoints */
+    @media (max-width: 920px) {
+      .showcase-stage { grid-template-columns: 1fr; }
+      .ad-showcase-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .page-grid { padding-inline: var(--space-md); gap: var(--space-md); }
+      .top-bar { padding: var(--space-sm) var(--space-md); }
+      .top-nav { display: none; }
+      .trial-form-grid { grid-template-columns: 1fr; }
+      .live-sync-grid { grid-template-columns: 1fr; }
+      .ad-ui-preview-strip { grid-template-columns: 1fr; }
+      .band { padding-block: var(--space-xl); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="top-bar">
+      <a href="#top" class="brand-lockup">
+        <span class="brand-mark" aria-hidden="true">৳</span>
+        <span>দেনা-পাওনা</span>
+      </a>
+      <nav class="top-nav" aria-label="মূল সেকশন নেভিগেশন">
+        <a href="#phone-showcase">অ্যাপ ডেমো</a>
+        <a href="#screen-flows">৩টি স্ক্রিন</a>
+        <a href="#digital-ad">ডিজিটাল অ্যাড</a>
+        <a href="#pricing">প্রাইসিং</a>
+        <a href="#trial-cta" class="btn-primary">ফ্রি ব্যবহার করে দেখুন</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- BAND 1: Hero & Interactive Mobile Phone Showcase -->
+    <section class="band hero-band">
+      <div class="page-grid">
+        <div class="headline-stack">
+          <span class="eyebrow">বাংলাদেশের দোকানদার ও ক্ষুদ্র ব্যবসায়ীদের জন্য ক্যাশ ফ্লো ও বাকি হিসাব</span>
+          <h1>দেনা-পাওনা</h1>
+          <p class="tagline-bn">কে কত দেবে, কার কাছে কত পাওনা?</p>
+          <p class="tagline-en">Know who owes you. Know what's coming.</p>
+          <p class="lede">
+            বাকি বিক্রি, bKash-Nagad-ব্যাংক পেমেন্ট ম্যাচিং এবং আগামী ৪ সপ্তাহের নগদ টাকার পূর্বাভাস—সবকিছু এখন আপনার হাতের ফোনেই, বাংলা ও ইংরেজিতে।
+          </p>
+          <div class="cta-row">
+            <a href="#trial-cta" class="btn-primary">ফ্রি ব্যবহার করে দেখুন</a>
+            <a href="#phone-showcase" class="link-more">লাইভ মোবাইল UI পরীক্ষা করুন</a>
+          </div>
+        </div>
+
+        <div id="phone-showcase" class="showcase-stage">
+          <!-- Left column: Interactive Flow Steps & Live Telemetry -->
+          <div class="flow-selector-col">
+            <button type="button" id="step-btn-home" class="flow-step-card is-active" onclick="switchPhoneScreen('home')">
+              <div class="flow-step-head">
+                <span class="flow-step-badge">স্ক্রিন ১ • হোম: পাওনা</span>
+                <i data-lucide="wallet" width="18" height="18" aria-hidden="true"></i>
+              </div>
+              <h2 class="flow-step-title">কার কাছে কত পাওনা, এক নজরেই</h2>
+              <p class="flow-step-desc">
+                মোট পাওনা ৳, এই সপ্তাহে মেয়াদোত্তীর্ণ দোকানের তালিকা এবং এক ট্যাপে বিনয়ী WhatsApp বা SMS রিমাইন্ডার।
+              </p>
+            </button>
+
+            <button type="button" id="step-btn-import" class="flow-step-card" onclick="switchPhoneScreen('import')">
+              <div class="flow-step-head">
+                <span class="flow-step-badge">স্ক্রিন ২ • ইম্পোর্ট: পেমেন্ট</span>
+                <i data-lucide="arrow-left-right" width="18" height="18" aria-hidden="true"></i>
+              </div>
+              <h2 class="flow-step-title">bKash, Nagad ও ব্যাংক স্টেটমেন্ট ম্যাচিং</h2>
+              <p class="flow-step-desc">
+                মোবাইল ফিন্যান্সিয়াল ও ব্যাংক স্টেটমেন্ট আপলোড করুন—অ্যাপ স্বয়ংক্রিয়ভাবে গ্রাহকের সাথে ম্যাচ করার প্রস্তাব দেবে; এক ট্যাপে নিশ্চিত করুন।
+              </p>
+            </button>
+
+            <button type="button" id="step-btn-forecast" class="flow-step-card" onclick="switchPhoneScreen('forecast')">
+              <div class="flow-step-head">
+                <span class="flow-step-badge">স্ক্রিন ৩ • পূর্বাভাস: আগামী ৪ সপ্তাহ</span>
+                <i data-lucide="bar-chart-3" width="18" height="18" aria-hidden="true"></i>
+              </div>
+              <h2 class="flow-step-title">সম্ভাব্য আদায় বনাম আসন্ন বিল</h2>
+              <p class="flow-step-desc">
+                আগামী চার সপ্তাহে কত টাকা ঢুকবে আর দোকান ভাড়া বা সাপ্লায়ারের বিল কত—নগদ ঘাটতির ঝুঁকি আগেই দেখুন।
+              </p>
+            </button>
+
+            <div class="live-sync-grid" aria-label="লাইভ ডেমো পরিসংখ্যান">
+              <div class="sync-mini-tile">
+                <span class="sync-label">মোট পাওনা</span>
+                <span id="sync-total-owed" class="sync-val">৳ ১,৪৮,৫০০</span>
+              </div>
+              <div class="sync-mini-tile">
+                <span class="sync-label">ম্যাচ করা পেমেন্ট</span>
+                <span id="sync-matched-count" class="sync-val">০ / ৩টি</span>
+              </div>
+              <div class="sync-mini-tile">
+                <span class="sync-label">রিমাইন্ডার পাঠানো</span>
+                <span id="sync-reminded-count" class="sync-val">০টি দোকান</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column: Interactive Digitized Smartphone Mockup -->
+          <div class="device-stage">
+            <div class="phone-frame" role="region" aria-label="দেনা-পাওনা মোবাইল অ্যাপ ইন্টারফেস প্রদর্শনী">
+              <div class="phone-screen">
+                <div class="phone-status-bar">
+                  <span>9:41</span>
+                  <div class="phone-notch" aria-hidden="true"></div>
+                  <span>4G • 92%</span>
+                </div>
+
+                <div class="phone-app-header">
+                  <div class="phone-app-title">
+                    <span class="phone-app-badge" aria-hidden="true">৳</span>
+                    <span id="phone-brand-text">দেনা-পাওনা</span>
+                  </div>
+                  <div class="lang-switch" role="group" aria-label="অ্যাপের ভাষা পরিবর্তন">
+                    <button type="button" id="lang-bn-btn" class="active" onclick="setAppLanguage('bn')">বাংলা</button>
+                    <button type="button" id="lang-en-btn" onclick="setAppLanguage('en')">EN</button>
+                  </div>
+                </div>
+
+                <div class="phone-body">
+                  <!-- SCREEN 1: HOME: DUES -->
+                  <div id="screen-home" class="phone-panel active">
+                    <div class="app-hero-card">
+                      <div class="app-hero-row">
+                        <div>
+                          <div id="lbl-total-owed" class="app-hero-label">মোট পাওনা</div>
+                          <div id="phone-total-owed" class="app-hero-amount">৳ ১,৪৮,৫০০</div>
+                        </div>
+                        <button type="button" id="btn-toggle-add" class="app-add-btn" onclick="toggleQuickAddForm()">
+                          <i data-lucide="plus" width="14" height="14" aria-hidden="true"></i>
+                          <span id="lbl-quick-add">বাকি লিখুন</span>
+                        </button>
+                      </div>
+                      <div class="app-alert-strip">
+                        <span id="lbl-overdue-strip">এই সপ্তাহে মেয়াদোত্তীর্ণ: ৳ ৪২,০০০ (৩টি)</span>
+                        <i data-lucide="alert-circle" width="14" height="14" aria-hidden="true"></i>
+                      </div>
+                    </div>
+
+                    <div id="quick-add-form" class="app-inline-form" aria-label="নতুন বাকি যোগ করুন">
+                      <div>
+                        <label for="new-due-shop" id="lbl-new-shop" class="app-field-label">দোকান বা ক্রেতার নাম</label>
+                        <input id="new-due-shop" class="app-input" type="text" value="ভাই-ভাই এন্টারপ্রাইজ">
+                      </div>
+                      <div>
+                        <label for="new-due-amount" id="lbl-new-amount" class="app-field-label">বাকির পরিমাণ (৳)</label>
+                        <input id="new-due-amount" class="app-input" type="number" min="100" step="100" value="8500">
+                      </div>
+                      <div class="reminder-btns">
+                        <button type="button" class="mini-action-btn" onclick="submitQuickDue()">যোগ করুন</button>
+                        <button type="button" class="mini-action-btn neutral" onclick="toggleQuickAddForm()">বাতিল</button>
+                      </div>
+                      <div id="quick-add-msg" class="shop-meta"></div>
+                    </div>
+
+                    <div class="app-filter-row" role="group" aria-label="বাকি ফিল্টার">
+                      <button type="button" id="filter-all" class="app-chip active" onclick="filterDues('all')">সব দোকান</button>
+                      <button type="button" id="filter-overdue" class="app-chip" onclick="filterDues('overdue')">মেয়াদোত্তীর্ণ</button>
+                      <button type="button" id="filter-reminded" class="app-chip" onclick="filterDues('reminded')">রিমাইন্ডার গেছে</button>
+                    </div>
+
+                    <div id="dues-list-container" class="flow-selector-col" style="gap: var(--space-xs);"></div>
+                  </div>
+
+                  <!-- SCREEN 2: IMPORT: PAYMENTS -->
+                  <div id="screen-import" class="phone-panel">
+                    <div class="app-hero-card">
+                      <div class="app-hero-row">
+                        <div>
+                          <div id="lbl-import-title" class="app-hero-label">স্টেটমেন্ট ম্যাচিং</div>
+                          <div id="lbl-import-sub" class="shop-name" style="margin-top: 2px;">bKash, Nagad ও ব্যাংক লেনদেন</div>
+                        </div>
+                        <span id="import-matched-badge" class="status-pill info">০টি ম্যাচ</span>
+                      </div>
+                      <div style="margin-top: var(--space-sm); display: flex; gap: var(--space-xs); flex-wrap: wrap;">
+                        <button type="button" id="src-all" class="app-chip active" onclick="filterImports('all')">সব</button>
+                        <button type="button" id="src-bkash" class="app-chip" onclick="filterImports('bKash')">bKash</button>
+                        <button type="button" id="src-nagad" class="app-chip" onclick="filterImports('Nagad')">Nagad</button>
+                        <button type="button" id="src-bank" class="app-chip" onclick="filterImports('Bank')">ব্যাংক</button>
+                      </div>
+                    </div>
+
+                    <div id="imports-list-container" class="flow-selector-col" style="gap: var(--space-xs);"></div>
+                  </div>
+
+                  <!-- SCREEN 3: FORECAST: NEXT 4 WEEKS -->
+                  <div id="screen-forecast" class="phone-panel">
+                    <div class="app-hero-card">
+                      <div class="app-hero-row">
+                        <div>
+                          <div id="lbl-fc-title" class="app-hero-label">আগামী ৪ সপ্তাহের ক্যাশ প্রবাহ</div>
+                          <div id="fc-net-cash" class="app-hero-amount">৳ ১,০৮,০০০</div>
+                        </div>
+                        <button type="button" id="btn-export-pdf" class="mini-action-btn" onclick="triggerPdfPreview()">
+                          <i data-lucide="file-text" width="13" height="13" aria-hidden="true"></i>
+                          <span id="lbl-pdf-btn">PDF সামারি</span>
+                        </button>
+                      </div>
+                      <div id="fc-warning-banner" class="app-alert-strip" style="display: none;">
+                        <span id="fc-warning-text">সতর্কতা: ৩য় সপ্তাহে নগদ ঘাটতির সম্ভাবনা রয়েছে</span>
+                        <i data-lucide="alert-triangle" width="14" height="14" aria-hidden="true"></i>
+                      </div>
+                      <div id="pdf-toast" class="shop-meta" style="margin-top: var(--space-xs); color: var(--positive); font-weight: 600;"></div>
+                    </div>
+
+                    <div class="forecast-chart-wrap">
+                      <div class="forecast-legend">
+                        <span id="lbl-chart-cap" style="font-weight: 600;">আদায় বনাম বিল</span>
+                        <span class="legend-pair">
+                          <span class="legend-item"><span class="legend-swatch swatch-in"></span><span id="lbl-leg-in">আদায়</span></span>
+                          <span class="legend-item"><span class="legend-swatch swatch-out"></span><span id="lbl-leg-out">বিল</span></span>
+                        </span>
+                      </div>
+                      <div id="forecast-bars" class="week-bars-grid"></div>
+                      <div id="week-detail-box" class="shop-meta" style="margin-top: var(--space-sm); font-weight: 600; color: var(--on-surface);"></div>
+                    </div>
+
+                    <div class="app-row-card">
+                      <div class="app-row-top">
+                        <div>
+                          <div id="lbl-rent-title" class="shop-name">সপ্তাহ ৩: দোকান ভাড়া ও সাপ্লায়ার বিল</div>
+                          <div id="lbl-rent-sub" class="shop-meta">অতিরিক্ত ৳ ৪৫,০০০ বিল যোগ করে দেখুন</div>
+                        </div>
+                        <button type="button" id="toggle-extra-bill" class="mini-action-btn" onclick="toggleExtraBill()">
+                          বিল যোগ করুন
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <nav class="phone-bottom-nav" aria-label="অ্যাপ স্ক্রিন ট্যাব">
+                  <button type="button" id="tab-home" class="phone-tab-btn active" onclick="switchPhoneScreen('home')">
+                    <i data-lucide="wallet" width="17" height="17" aria-hidden="true"></i>
+                    <span id="nav-lbl-home">পাওনা</span>
+                  </button>
+                  <button type="button" id="tab-import" class="phone-tab-btn" onclick="switchPhoneScreen('import')">
+                    <i data-lucide="arrow-left-right" width="17" height="17" aria-hidden="true"></i>
+                    <span id="nav-lbl-import">ইম্পোর্ট</span>
+                  </button>
+                  <button type="button" id="tab-forecast" class="phone-tab-btn" onclick="switchPhoneScreen('forecast')">
+                    <i data-lucide="bar-chart-3" width="17" height="17" aria-hidden="true"></i>
+                    <span id="nav-lbl-forecast">পূর্বাভাস</span>
+                  </button>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 2: Digitized 3-Screen Flow Architecture -->
+    <section id="screen-flows" class="band alt">
+      <div class="page-grid">
+        <div class="headline-stack reveal">
+          <span class="eyebrow">ডিজিটাইজড মোবাইল UI ফ্লো</span>
+          <h2>তিনটি মূল স্ক্রিন, শূন্য প্রশিক্ষণের ঝামেলা</h2>
+          <p class="lede">
+            হিসাববিজ্ঞানের জটিল টার্ম বাদ দিয়ে দোকানদারের প্রতিদিনের তিনটি প্রশ্নকেই সামনে এনেছে 'দেনা-পাওনা'।
+          </p>
+        </div>
+
+        <div class="card-grid-3">
+          <article class="tile flow-gallery-tile interactive reveal" onclick="jumpToPhoneScreen('home')">
+            <div>
+              <span class="eyebrow">১. হোম: পাওনা (Home: Dues)</span>
+              <h3 style="margin: 0 0 var(--space-xs); font-family: var(--font-headline);">মোট পাওনা ও এক-ট্যাপ রিমাইন্ডার</h3>
+              <p style="margin: 0 0 var(--space-md); color: var(--on-surface-variant); font-size: 0.95rem;">
+                কার কাছে কত টাকা বাকি, কে মেয়াদোত্তীর্ণ এবং কাকে আজ তাগাদা দিতে হবে—সব সাজানো থাকে হোম স্ক্রিনেই।
+              </p>
+              <div class="mini-ui-wireframe" aria-hidden="true">
+                <div class="mini-ui-header">
+                  <span>মোট পাওনা</span>
+                  <span>৳ ১,৪৮,৫০০</span>
+                </div>
+                <div class="mini-ui-row">
+                  <span>মদিনা ফার্মেসি • মেয়াদোত্তীর্ণ</span>
+                  <span class="status-pill overdue">৳ ১৮,৫০০</span>
+                </div>
+                <div class="mini-ui-row">
+                  <span>রহিম রাইস এজেন্সি</span>
+                  <span class="status-pill info">WhatsApp রিমাইন্ডার</span>
+                </div>
+              </div>
+            </div>
+            <span class="link-more">ফোন ডেমোতে দেখুন</span>
+          </article>
+
+          <article class="tile flow-gallery-tile interactive reveal" onclick="jumpToPhoneScreen('import')">
+            <div>
+              <span class="eyebrow">২. ইম্পোর্ট: পেমেন্ট (Import: Payments)</span>
+              <h3 style="margin: 0 0 var(--space-xs); font-family: var(--font-headline);">bKash, Nagad ও ব্যাংক ম্যাচিং</h3>
+              <p style="margin: 0 0 var(--space-md); color: var(--on-surface-variant); font-size: 0.95rem;">
+                মোবাইল ব্যাংকিং ও ব্যাংকের CSV/PDF স্টেটমেন্ট আপলোড করলেই গ্রাহকের বাকি বিলের সাথে সম্ভাব্য মিল দেখায়।
+              </p>
+              <div class="mini-ui-wireframe" aria-hidden="true">
+                <div class="mini-ui-header">
+                  <span>ইম্পোর্ট ম্যাচ</span>
+                  <span>৩টি নতুন</span>
+                </div>
+                <div class="mini-ui-row">
+                  <span>bKash #9K4M • ৳ ১২,৫০০</span>
+                  <span class="status-pill ok">নিশ্চিত করুন ✓</span>
+                </div>
+                <div class="mini-ui-row">
+                  <span>Nagad #4T8N • ৳ ৭,০০০</span>
+                  <span class="status-pill due-soon">মেলেনি (বাছাই)</span>
+                </div>
+              </div>
+            </div>
+            <span class="link-more">ফোন ডেমোতে দেখুন</span>
+          </article>
+
+          <article class="tile flow-gallery-tile interactive reveal" onclick="jumpToPhoneScreen('forecast')">
+            <div>
+              <span class="eyebrow">৩. পূর্বাভাস: আগামী ৪ সপ্তাহ (Next 4 Weeks)</span>
+              <h3 style="margin: 0 0 var(--space-xs); font-family: var(--font-headline);">সম্ভাব্য আদায় বনাম আসন্ন বিল</h3>
+              <p style="margin: 0 0 var(--space-md); color: var(--on-surface-variant); font-size: 0.95rem;">
+                পরবর্তী চার সপ্তাহের প্রত্যাশিত কালেকশন, দোকান ভাড়া ও সাপ্লায়ার বিলের তুলনা এবং PDF রিপোর্ট এক্সপোর্ট।
+              </p>
+              <div class="mini-ui-wireframe" aria-hidden="true">
+                <div class="mini-ui-header">
+                  <span>সাপ্তাহিক ক্যাশ প্রবাহ</span>
+                  <span>৪ সপ্তাহ</span>
+                </div>
+                <div class="mini-ui-row">
+                  <span>সম্ভাব্য আদায় (৪ সপ্তাহ)</span>
+                  <span class="status-pill info">৳ ১,৬৮,০০০</span>
+                </div>
+                <div class="mini-ui-row">
+                  <span>আসন্ন বিল ও ভাড়া</span>
+                  <span class="status-pill due-soon">৳ ৬০,০০০</span>
+                </div>
+              </div>
+            </div>
+            <span class="link-more">ফোন ডেমোতে দেখুন</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 3: Interactive Digital Ad Campaign Showcase -->
+    <section id="digital-ad" class="band">
+      <div class="page-grid">
+        <div class="headline-stack reveal">
+          <span class="eyebrow">ইন্টারেক্টিভ ডিজিটাল অ্যাড প্রদর্শনী</span>
+          <h2>টাকা খোঁজা বন্ধ করুন</h2>
+          <p class="lede">
+            See every due and every bKash payment in one place. — ফেসবুক, হোয়াটসঅ্যাপ ও পাইকারি বাজারের ডিজিটাল ফ্লায়ার ফরম্যাটে 'দেনা-পাওনা'-এর বিজ্ঞাপন।
+          </p>
+        </div>
+
+        <div class="ad-switcher">
+          <div class="segmented-track" role="group" aria-label="ডিজিটাল অ্যাড ফরম্যাট বাছাই করুন">
+            <button type="button" id="ad-btn-feed" class="segmented-btn active" onclick="setAdFormat('feed')">ফেসবুক / ইন্সটাগ্রাম ফিড অ্যাড</button>
+            <button type="button" id="ad-btn-whatsapp" class="segmented-btn" onclick="setAdFormat('whatsapp')">হোয়াটসঅ্যাপ গ্রুপ প্রোমো</button>
+            <button type="button" id="ad-btn-flyer" class="segmented-btn" onclick="setAdFormat('flyer')">ডিজিটাল মার্কেট ফ্লায়ার</button>
+          </div>
+        </div>
+
+        <div class="ad-showcase-grid card-wrapper">
+          <div id="ad-canvas" class="ad-specimen-canvas reveal">
+            <div>
+              <div class="ad-top-meta">
+                <span>দেনা-পাওনা • কে কত দেবে, কার কাছে কত পাওনা?</span>
+                <span id="ad-format-badge" class="ad-channel-tag">Facebook / Instagram Ad</span>
+              </div>
+
+              <div style="margin-top: var(--space-lg);">
+                <h3 id="ad-headline" class="ad-headline-copy">টাকা খোঁজা বন্ধ করুন</h3>
+                <p id="ad-en-sub" class="ad-sub-copy">See every due and every bKash payment in one place.</p>
+                <p id="ad-body" class="ad-body-copy">
+                  প্রতিটি বাকি বিক্রি এবং প্রতিটি bKash ও Nagad পেমেন্ট দেখুন এক জায়গায়। প্রথম ২০ জন গ্রাহক সম্পূর্ণ ফ্রি।
+                </p>
+              </div>
+            </div>
+
+            <div class="ad-ui-preview-strip" aria-label="বিজ্ঞাপনে প্রদর্শিত ডিজিটাল UI সারাংশ">
+              <div class="ad-ui-pill-card">
+                <span class="mini-k">হোম: পাওনা</span>
+                <span class="mini-v">৳ ১,৪৮,৫০০</span>
+                <span class="status-pill overdue" style="width: fit-content;">৩টি মেয়াদোত্তীর্ণ</span>
+              </div>
+              <div class="ad-ui-pill-card">
+                <span class="mini-k">bKash / Nagad ম্যাচ</span>
+                <span class="mini-v">৳ ১২,৫০০ ✓</span>
+                <span class="status-pill ok" style="width: fit-content;">১ ট্যাপে মিলেছে</span>
+              </div>
+              <div class="ad-ui-pill-card">
+                <span class="mini-k">৪ সপ্তাহের পূর্বাভাস</span>
+                <span class="mini-v">+৳ ১,০৮,০০০</span>
+                <span class="status-pill info" style="width: fit-content;">আদায় বনাম বিল</span>
+              </div>
+            </div>
+
+            <div class="ad-specimen-footer">
+              <div>
+                <div style="font-weight: 700; font-size: 0.92rem;">Know who owes you. Know what's coming.</div>
+                <div style="font-size: 0.8rem; opacity: 0.82;">বাংলা ও ইংরেজিতে • ফোনেই ব্যবহারযোগ্য</div>
+              </div>
+              <a href="#trial-cta" class="btn-primary">ফ্রি ব্যবহার করে দেখুন</a>
+            </div>
+          </div>
+
+          <div class="ad-specs-panel reveal">
+            <div class="spec-item">
+              <span class="spec-label">মূল বিজ্ঞাপন শিরোনাম</span>
+              <p class="spec-val">টাকা খোঁজা বন্ধ করুন (Stop chasing money.)</p>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">প্রাইমারি অ্যাড কপি</span>
+              <p class="spec-val">See every due and every bKash payment in one place. — প্রথম ২০ জন গ্রাহক একদম ফ্রি।</p>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">লঞ্চ চ্যানেল ও প্রচারণা</span>
+              <p id="ad-channel-detail" class="spec-val">
+                লোকাল ট্রেডার ফেসবুক গ্রুপ ও পাইকারি বাজারের হোয়াটসঅ্যাপ গ্রুপে বাংলায় শর্ট UI ডেমো ভিডিও।
+              </p>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">কেন মানুষ-মুক্ত ডিজিটাল UI অ্যাড?</span>
+              <p class="spec-val">
+                কোনো স্টক ছবি ছাড়াই সরাসরি আসল ফোনের স্ক্রিন, টাকার অঙ্ক ও bKash/Nagad ম্যাচিং দেখিয়ে দোকানদারের বিশ্বাস অর্জন।
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 4: Key Metrics & Problem-Solution Clarity -->
+    <section class="band alt">
+      <div class="page-grid">
+        <div class="headline-stack reveal">
+          <span class="eyebrow">কেন দেনা-পাওনা আলাদা?</span>
+          <h2>খাতা বা জটিল অ্যাকাউন্টিং সফটওয়্যার নয়—প্রতিদিনের নগদ টাকার সহায়ক</h2>
+          <p class="lede">
+            প্রচলিত সফটওয়্যার ট্যাক্স ও জটিল বইখাতা নিয়ে ব্যস্ত, আর কাগজের খাতায় বাকি হারিয়ে যায়।
+          </p>
+        </div>
+
+        <div class="compare-grid">
+          <div class="tile compare-tile reveal">
+            <span class="compare-before">আগে: খাতা, নোটবুক ও মনে রাখা</span>
+            <h3 class="compare-after">এখন: এক স্ক্রিনে মোট পাওনা ও মেয়াদোত্তীর্ণ অ্যালার্ট</h3>
+            <p style="margin: 0; color: var(--on-surface-variant); font-size: 0.92rem;">
+              পাইকারি বা খুচরা দোকানে বাকি বিক্রির সাথে সাথেই ফোনে এন্ট্রি, কোনো মেয়াদোত্তীর্ণ টাকা আর চোখ এড়াবে না।
+            </p>
+          </div>
+          <div class="tile compare-tile reveal">
+            <span class="compare-before">আগে: bKash/Nagad-এর অমিল রসিদ</span>
+            <h3 class="compare-after">এখন: স্টেটমেন্ট ইম্পোর্ট ও এক-ট্যাপ ম্যাচিং</h3>
+            <p style="margin: 0; color: var(--on-surface-variant); font-size: 0.92rem;">
+              গ্রাহক টাকা পাঠানোর পর ট্রানজেকশন আইডি মিলিয়ে ইনভয়েস আপডেট করা যায় এক ট্যাপেই।
+            </p>
+          </div>
+          <div class="tile compare-tile reveal">
+            <span class="compare-before">আগে: টাকা চাইতে সংকোচ ও দেরি</span>
+            <h3 class="compare-after">এখন: বিনয়ী বাংলা-ইংরেজি SMS ও WhatsApp রিমাইন্ডার</h3>
+            <p style="margin: 0; color: var(--on-surface-variant); font-size: 0.92rem;">
+              আগে থেকে লেখা ভদ্র তাগাদা মেসেজ পাঠান এক ক্লিকেই, সম্পর্ক ঠিক রেখেই আদায় বাড়ান।
+            </p>
+          </div>
+          <div class="tile compare-tile reveal">
+            <span class="compare-before">আগে: ভারী ডেস্কটপ অ্যাকাউন্টিং</span>
+            <h3 class="compare-after">এখন: বাংলা-ফার্স্ট, ফোন-ফার্স্ট এবং ৪ সপ্তাহের ক্যাশ পূর্বাভাস</h3>
+            <p style="margin: 0; color: var(--on-surface-variant); font-size: 0.92rem;">
+              আগামী সপ্তাহে দোকান ভাড়া বা মাল কেনার টাকা হাতে থাকবে কি না—তা আগেই জানুন।
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 5: Pricing Tiers -->
+    <section id="pricing" class="band">
+      <div class="page-grid">
+        <div class="headline-stack reveal">
+          <span class="eyebrow">স্বচ্ছ সাবস্ক্রিপশন মডেল</span>
+          <h2>প্রথম ২০ জন গ্রাহক ফ্রি—bKash বা Nagad-এ সহজ পেমেন্ট</h2>
+          <p class="lede">
+            আপনার দোকানের আকার অনুযায়ী প্ল্যান বেছে নিন। যেকোনো প্ল্যানে ক্লিক করে ট্রায়াল সেটআপে যুক্ত করুন।
+          </p>
+        </div>
+
+        <div class="pricing-grid">
+          <article id="tier-card-free" class="tile pricing-tile reveal">
+            <div>
+              <div class="tier-header">
+                <div class="tier-badge-row">
+                  <h3 class="tier-name">ফ্রি (Free)</h3>
+                </div>
+                <div class="tier-price">৳০ <span class="tier-period">/ চিরতরে ফ্রি</span></div>
+              </div>
+              <ul class="tier-features" style="margin-top: var(--space-md);">
+                <li><i data-lucide="check" width="16" height="16" class="check-icon" aria-hidden="true"></i><span>সর্বোচ্চ ২০ জন গ্রাহক</span></li>
+                <li><i data-lucide="check" width="16" height="16" class="check-icon" aria-hidden="true"></i><span>ম্যানুয়াল বাকি এন্ট্রি</span></li>
+                <li><i data-lucide="check" width="16" height="16" class="check-icon" aria-hidden="true"></i><span>সাধারণ বাকি তালিকা (বাংলা ও ইংরেজি)</span></li>
+              </ul>
+            </div>
+            <button type="button" class="btn-secondary" onclick="selectPricingTier('free')">ফ্রি দিয়ে শুরু করুন</button>
+          </article>
+
+          <article id="tier-card-starter" class="tile pricing-tile reveal">
+            <div>
+              <div class="tier-header">
+                <div class="tier-badge-row">
+                  <h3 class="tier-name">স্টার্টার (Starter)</h3>
+                </div>
+                <div class="tier-price">৳৩০০ <span class="tier-period">/ মাস</span></div>
+              </div>
+              <ul class="tier-features" style="margin-top: var(--space-md);">
+                <li><i data-lucide="check" width="16" height="16" class="check-icon" aria-hidden="true"></i><span>আনলিমিটেড গ্রাহক</span></li>
+                <li><i data-lucide="check" width="16" height="16" class="check-icon" aria-hidden="true"></i><span>bKash, Nagad ও ব্যাংক স্টেটমেন্ট ইম্পোর্ট</span></li>
+                <li><i data-lucide="check" width="16" height="16" class="check-icon" aria-hidden="true"></i><span>এক-ট্যাপে SMS রিমাইন্ডার</span></li>
+              </ul>
+            </div>
+            <button type="button" class="btn-secondary" onclick="selectPricingTier('starter')">স্টার্টার বাছাই করুন</button>
+          </article>
+
+          <article id="tier-card-growth" class="tile pricing-tile featured is-selected reveal">
+            <div>
+              <div class="tier-header">
+                <div class="tier-badge-row">
+                  <h3 class="tier-name">গ্রোথ (Growth)</h3>
+                  <span class="tier-tag">সবচেয়ে জনপ্রিয়</span>
+                </div>
+                <div class="tier-price">৳৮০০ <span class="tier-period">/ মাস</span></div>
+              </div>
+              <ul class="tier-features" style="margin-top: var(--space-md);">
+                <li><i data-lucide="check" width="16" height="16" class="check-icon" aria-hidden="true"></i><span>সর্বোচ্চ ৩ জন স্টাফ ইউজার</span></li>
+                <li><i data-lucide="check" width="16" height="16" class="check-icon" aria-hidden="true"></i><span>এক-ট্যাপ WhatsApp রিমাইন্ডার</span></li>
+                <li><i data-lucide="check" width="16" height="16" class="check-icon" aria-hidden="true"></i><span>আগামী ৪ সপ্তাহের ক্যাশ পূর্বাভাস</span></li>
+              </ul>
+            </div>
+            <button type="button" class="btn-primary" onclick="selectPricingTier('growth')">গ্রোথ বাছাই করুন</button>
+          </article>
+
+          <article id="tier-card-pro" class="tile pricing-tile reveal">
+            <div>
+              <div class="tier-header">
+                <div class="tier-badge-row">
+                  <h3 class="tier-name">প্রো (Pro)</h3>
+                </div>
+                <div class="tier-price">৳১,৫০০ <span class="tier-period">/ মাস</span></div>
+              </div>
+              <ul class="tier-features" style="margin-top: var(--space-md);">
+                <li><i data-lucide="check" width="16" height="16" class="check-icon" aria-hidden="true"></i><span>একাধিক দোকান (Multiple shops)</span></li>
+                <li><i data-lucide="check" width="16" height="16" class="check-icon" aria-hidden="true"></i><span>বিস্তারিত রিপোর্ট ও PDF এক্সপোর্ট</span></li>
+                <li><i data-lucide="check" width="16" height="16" class="check-icon" aria-hidden="true"></i><span>প্রায়োরিটি সাপোর্ট</span></li>
+              </ul>
+            </div>
+            <button type="button" class="btn-secondary" onclick="selectPricingTier('pro')">প্রো বাছাই করুন</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 6: Interactive CTA Trial Launcher -->
+    <section id="trial-cta" class="band alt">
+      <div class="page-grid">
+        <div class="headline-stack reveal">
+          <span class="eyebrow">১ মিনিটে শুরু করুন</span>
+          <h2>দেনা-পাওনা—আপনার দোকানের ডিজিটাল হিসাব খাতা</h2>
+          <p class="lede">
+            কে কত দেবে, কার কাছে কত পাওনা? — প্রথম ২০ জন গ্রাহক সম্পূর্ণ ফ্রি। নিচের তথ্য দিয়ে আপনার দোকানের ট্রায়াল ওয়ার্কস্পেস প্রিভিউ তৈরি করুন।
+          </p>
+        </div>
+
+        <div class="trial-container">
+          <div class="tile reveal">
+            <div class="trial-form-grid">
+              <div class="field-group">
+                <label for="trial-shop-name" class="field-label">আপনার দোকান বা ব্যবসার নাম</label>
+                <input id="trial-shop-name" class="field-input" type="text" value="বিসমিল্লাহ রাইস ট্রেডার্স">
+              </div>
+
+              <div class="field-group">
+                <label for="trial-segment" class="field-label">ব্যবসার ধরন</label>
+                <select id="trial-segment" class="field-select">
+                  <option value="wholesale">পাইকারি ও ডিস্ট্রিবিউশন (সর্বোচ্চ চাহিদা)</option>
+                  <option value="pharmacy">ফার্মেসি ও মেডিকেল স্টোর</option>
+                  <option value="restaurant">রেস্টুরেন্ট ও ক্যাটারিং</option>
+                  <option value="service">সার্ভিস ব্যবসা (প্রিন্টিং, টেইলারিং, এজেন্সি)</option>
+                </select>
+              </div>
+
+              <div class="field-group">
+                <label for="trial-plan" class="field-label">পছন্দের প্ল্যান (bKash / Nagad)</label>
+                <select id="trial-plan" class="field-select" onchange="syncPlanFromSelect(this.value)">
+                  <option value="free">ফ্রি — ৳০ (সর্বোচ্চ ২০ জন গ্রাহক)</option>
+                  <option value="starter">স্টার্টার — ৳৩০০ / মাস (আনলিমিটেড গ্রাহক ও স্টেটমেন্ট ইম্পোর্ট)</option>
+                  <option value="growth" selected>গ্রোথ — ৳৮০০ / মাস (WhatsApp ও ৪ সপ্তাহের পূর্বাভাস)</option>
+                  <option value="pro">প্রো — ৳১,৫০০ / মাস (একাধিক দোকান ও PDF এক্সপোর্ট)</option>
+                </select>
+              </div>
+
+              <div class="field-group">
+                <label for="trial-lang" class="field-label">অ্যাপের পছন্দের ভাষা</label>
+                <select id="trial-lang" class="field-select">
+                  <option value="bn">বাংলা (Bangla-first)</option>
+                  <option value="both">বাংলা ও ইংরেজি (Bilingual)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="trial-submit-row">
+              <div id="trial-error" class="inline-feedback" role="status" aria-live="polite"></div>
+              <button type="button" id="main-cta-btn" class="btn-primary" onclick="launchTrialPreview()">
+                <span>ফ্রি ব্যবহার করে দেখুন</span>
+                <i data-lucide="arrow-right" width="18" height="18" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <div id="trial-result" class="trial-result-card" aria-live="polite">
+              <div class="trial-result-header">
+                <div>
+                  <span class="eyebrow" style="margin-bottom: 2px;">ট্রায়াল ওয়ার্কস্পেস প্রস্তুত</span>
+                  <h3 id="trial-res-title" style="margin: 0; font-family: var(--font-headline);">বিসমিল্লাহ রাইস ট্রেডার্স — দেনা-পাওনা</h3>
+                </div>
+                <span id="trial-res-badge" class="tier-tag">গ্রোথ (৳৮০০ / মাস)</span>
+              </div>
+              <p id="trial-res-desc" style="margin: 0; font-size: 0.95rem; color: var(--on-surface);">
+                আপনার প্রথম ২০ জন গ্রাহকের জন্য ফ্রি ট্রায়াল চালু হয়েছে। কোনো অ্যাকাউন্টিং প্রশিক্ষণ ছাড়াই এখনই বাকি লেখা ও bKash স্টেটমেন্ট ম্যাচিং শুরু করতে পারবেন।
+              </p>
+              <div class="trial-checklist">
+                <div class="trial-check-box">
+                  <strong>১. বাকি যোগ করুন</strong>
+                  <div class="shop-meta" style="margin-top: 4px;">হোম স্ক্রিনে কয়েক সেকেন্ডে বাকি বিক্রি লিখুন।</div>
+                </div>
+                <div class="trial-check-box">
+                  <strong>২. স্টেটমেন্ট ম্যাচ</strong>
+                  <div class="shop-meta" style="margin-top: 4px;">bKash বা Nagad CSV/PDF আপলোড করে মিলিয়ে নিন।</div>
+                </div>
+                <div class="trial-check-box">
+                  <strong>৩. ৪ সপ্তাহের পূর্বাভাস</strong>
+                  <div class="shop-meta" style="margin-top: 4px;">আগামী মাসের ভাড়া ও বিলের প্রস্তুতি আগে থেকেই দেখুন।</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="page-grid">
+      <div>
+        <p><strong>দেনা-পাওনা</strong> — কে কত দেবে, কার কাছে কত পাওনা? • Know who owes you. Know what's coming.</p>
+        <p>উৎস: “Dena Paona — SME Cash Flow &amp; Receivables” প্রোডাক্ট ডিজাইন ও বিজনেস আইডিয়া প্রেজেন্টেশন (বাংলাদেশের পাইকারি ব্যবসায়ী, ফার্মেসি, রেস্টুরেন্ট ও ক্ষুদ্র উদ্যোক্তাদের জন্য পরিকল্পিত)।</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const appState = {
+      screen: 'home',
+      lang: 'bn',
+      dueFilter: 'all',
+      importFilter: 'all',
+      selectedWeek: 2,
+      extraBillEnabled: false,
+      activeReminderId: null,
+      selectedTier: 'growth',
+      adFormat: 'feed',
+      dues: [
+        { id: 1, nameBn: `মদিনা ফার্মেসি`, nameEn: `Madina Pharmacy`, code: `ম`, amount: 18500, daysOverdue: 6, status: `overdue`, reminded: false, noteBn: `৬ দিন মেয়াদোত্তীর্ণ`, noteEn: `6 days overdue` },
+        { id: 2, nameBn: `রহিম রাইস এজেন্সি`, nameEn: `Rahim Rice Agency`, code: `র`, amount: 14500, daysOverdue: 3, status: `overdue`, reminded: false, noteBn: `৩ দিন মেয়াদোত্তীর্ণ`, noteEn: `3 days overdue` },
+        { id: 3, nameBn: `মায়ের দোয়া স্টোর`, nameEn: `Mayer Doa Store`, code: `মা`, amount: 9000, daysOverdue: 1, status: `overdue`, reminded: false, noteBn: `গতকাল দেয়ার কথা ছিল`, noteEn: `Due yesterday` },
+        { id: 4, nameBn: `আল-আমিন ট্রেডার্স`, nameEn: `Al-Amin Traders`, code: `আ`, amount: 64500, daysOverdue: 0, status: `due-soon`, reminded: false, noteBn: `আগামী ৩ দিনে পরিশোধ`, noteEn: `Due in 3 days` },
+        { id: 5, nameBn: `করিম জেনারেল স্টোর`, nameEn: `Karim General Store`, code: `ক`, amount: 42000, daysOverdue: 0, status: `due-soon`, reminded: false, noteBn: `আগামী সপ্তাহে পরিশোধ`, noteEn: `Due next week` }
+      ],
+      imports: [
+        { id: 101, channel: `bKash`, trxId: `9K4M7X2P`, amount: 12500, suggestedId: 1, suggestedBn: `মদিনা ফার্মেসি`, suggestedEn: `Madina Pharmacy`, matched: false, unmatched: false },
+        { id: 102, channel: `Nagad`, trxId: `4T8N2W9Q`, amount: 7000, suggestedId: null, suggestedBn: ``, suggestedEn: ``, matched: false, unmatched: true },
+        { id: 103, channel: `Bank`, trxId: `DBBL-8841`, amount: 22000, suggestedId: 4, suggestedBn: `আল-আমিন ট্রেডার্স`, suggestedEn: `Al-Amin Traders`, matched: false, unmatched: false }
+      ],
+      weeks: [
+        { idx: 0, labelBn: `সপ্তাহ ১`, labelEn: `Wk 1`, inAmt: 42000, outAmt: 12000 },
+        { idx: 1, labelBn: `সপ্তাহ ২`, labelEn: `Wk 2`, inAmt: 48000, outAmt: 18000 },
+        { idx: 2, labelBn: `সপ্তাহ ৩`, labelEn: `Wk 3`, inAmt: 33000, outAmt: 15000 },
+        { idx: 3, labelBn: `সপ্তাহ ৪`, labelEn: `Wk 4`, inAmt: 45000, outAmt: 15000 }
+      ]
+    };
+
+    function toBanglaDigits(num) {
+      const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+      const formatted = Number(num).toLocaleString('en-IN');
+      return formatted.replace(/\d/g, function(d) { return bnDigits[Number(d)]; });
+    }
+
+    function formatTaka(num) {
+      if (appState.lang === 'en') {
+        return `৳ ${Number(num).toLocaleString('en-IN')}`;
+      }
+      return `৳ ${toBanglaDigits(num)}`;
+    }
+
+    function formatNumber(num) {
+      if (appState.lang === 'en') return String(num);
+      return toBanglaDigits(num);
+    }
+
+    function getTotalOwed() {
+      return appState.dues.reduce(function(sum, item) { return sum + item.amount; }, 0);
+    }
+
+    function getOverdueTotal() {
+      return appState.dues.filter(function(item) { return item.status === 'overdue' && item.amount > 0; })
+        .reduce(function(sum, item) { return sum + item.amount; }, 0);
+    }
+
+    function getOverdueCount() {
+      return appState.dues.filter(function(item) { return item.status === 'overdue' && item.amount > 0; }).length;
+    }
+
+    function switchPhoneScreen(screenName) {
+      appState.screen = screenName;
+      const screens = ['home', 'import', 'forecast'];
+      screens.forEach(function(sc) {
+        const panel = document.getElementById(`screen-${sc}`);
+        const tab = document.getElementById(`tab-${sc}`);
+        const stepBtn = document.getElementById(`step-btn-${sc}`);
+        if (panel) panel.classList.toggle('active', sc === screenName);
+        if (tab) tab.classList.toggle('active', sc === screenName);
+        if (stepBtn) stepBtn.classList.toggle('is-active', sc === screenName);
+      });
+      renderAll();
+    }
+
+    function jumpToPhoneScreen(screenName) {
+      switchPhoneScreen(screenName);
+      const showcase = document.getElementById('phone-showcase');
+      if (showcase) showcase.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function setAppLanguage(lang) {
+      appState.lang = lang;
+      const bnBtn = document.getElementById('lang-bn-btn');
+      const enBtn = document.getElementById('lang-en-btn');
+      if (bnBtn) bnBtn.classList.toggle('active', lang === 'bn');
+      if (enBtn) enBtn.classList.toggle('active', lang === 'en');
+      renderAll();
+    }
+
+    function filterDues(filterVal) {
+      appState.dueFilter = filterVal;
+      const filters = ['all', 'overdue', 'reminded'];
+      filters.forEach(function(f) {
+        const btn = document.getElementById(`filter-${f}`);
+        if (btn) btn.classList.toggle('active', f === filterVal);
+      });
+      renderDuesList();
+    }
+
+    function toggleQuickAddForm() {
+      const form = document.getElementById('quick-add-form');
+      const msg = document.getElementById('quick-add-msg');
+      if (form) form.classList.toggle('open');
+      if (msg) msg.textContent = ``;
+    }
+
+    function submitQuickDue() {
+      const shopInput = document.getElementById('new-due-shop');
+      const amtInput = document.getElementById('new-due-amount');
+      const msg = document.getElementById('quick-add-msg');
+      if (!shopInput || !amtInput || !msg) return;
+
+      const shopName = shopInput.value.trim();
+      const amt = Number(amtInput.value);
+      if (!shopName || !amt || amt <= 0) {
+        msg.textContent = appState.lang === 'en' ? `Enter a valid shop name and amount.` : `সঠিক দোকানের নাম ও টাকার অঙ্ক দিন।`;
+        return;
+      }
+      const newId = Date.now();
+      appState.dues.unshift({
+        id: newId,
+        nameBn: shopName,
+        nameEn: shopName,
+        code: shopName.charAt(0),
+        amount: amt,
+        daysOverdue: 0,
+        status: `due-soon`,
+        reminded: false,
+        noteBn: `এইমাত্র যোগ করা হয়েছে`,
+        noteEn: `Added just now`
+      });
+      const form = document.getElementById('quick-add-form');
+      if (form) form.classList.remove('open');
+      renderAll();
+    }
+
+    function toggleReminderDrawer(dueId) {
+      appState.activeReminderId = appState.activeReminderId === dueId ? null : dueId;
+      renderDuesList();
+    }
+
+    function sendReminder(dueId, channel) {
+      const item = appState.dues.find(function(d) { return d.id === dueId; });
+      if (!item) return;
+      item.reminded = true;
+      item.remindedVia = channel;
+      appState.activeReminderId = null;
+      renderAll();
+    }
+
+    function filterImports(src) {
+      appState.importFilter = src;
+      const keys = ['all', 'bkash', 'nagad', 'bank'];
+      keys.forEach(function(k) {
+        const btn = document.getElementById(`src-${k}`);
+        if (btn) btn.classList.toggle('active', k.toLowerCase() === src.toLowerCase());
+      });
+      renderImportsList();
+    }
+
+    function confirmImportMatch(importId) {
+      const imp = appState.imports.find(function(i) { return i.id === importId; });
+      if (!imp || imp.matched) return;
+
+      let targetId = imp.suggestedId;
+      if (imp.unmatched) {
+        const selectEl = document.getElementById(`match-select-${importId}`);
+        if (selectEl) targetId = Number(selectEl.value);
+      }
+      const targetDue = appState.dues.find(function(d) { return d.id === targetId; });
+      if (targetDue) {
+        targetDue.amount = Math.max(0, targetDue.amount - imp.amount);
+        if (targetDue.amount === 0) targetDue.status = `ok`;
+        imp.suggestedBn = targetDue.nameBn;
+        imp.suggestedEn = targetDue.nameEn;
+      }
+      imp.matched = true;
+      renderAll();
+    }
+
+    function selectForecastWeek(weekIdx) {
+      appState.selectedWeek = weekIdx;
+      renderForecast();
+    }
+
+    function toggleExtraBill() {
+      appState.extraBillEnabled = !appState.extraBillEnabled;
+      renderForecast();
+    }
+
+    function triggerPdfPreview() {
+      const toast = document.getElementById('pdf-toast');
+      if (!toast) return;
+      toast.textContent = appState.lang === 'en'
+        ? `4-week PDF summary ready for export ✓`
+        : `৪ সপ্তাহের ক্যাশ পূর্বাভাস PDF সামারি তৈরি হয়েছে ✓`;
+    }
+
+    function renderStaticLabels() {
+      const isEn = appState.lang === 'en';
+      const brand = document.getElementById('phone-brand-text');
+      if (brand) brand.textContent = isEn ? `দেনা-পাওনা • App` : `দেনা-পাওনা`;
+
+      const lblOwed = document.getElementById('lbl-total-owed');
+      if (lblOwed) lblOwed.textContent = isEn ? `Total owed to you` : `মোট পাওনা`;
+
+      const lblQuickAdd = document.getElementById('lbl-quick-add');
+      if (lblQuickAdd) lblQuickAdd.textContent = isEn ? `Add due` : `বাকি লিখুন`;
+
+      const lblOverdue = document.getElementById('lbl-overdue-strip');
+      if (lblOverdue) {
+        const odAmt = formatTaka(getOverdueTotal());
+        const odCnt = formatNumber(getOverdueCount());
+        lblOverdue.textContent = isEn
+          ? `Overdue this week: ${odAmt} (${odCnt} shops)`
+          : `এই সপ্তাহে মেয়াদোত্তীর্ণ: ${odAmt} (${odCnt}টি)`;
+      }
+
+      const fAll = document.getElementById('filter-all');
+      const fOd = document.getElementById('filter-overdue');
+      const fRem = document.getElementById('filter-reminded');
+      if (fAll) fAll.textContent = isEn ? `All` : `সব দোকান`;
+      if (fOd) fOd.textContent = isEn ? `Overdue` : `মেয়াদোত্তীর্ণ`;
+      if (fRem) fRem.textContent = isEn ? `Reminded` : `রিমাইন্ডার গেছে`;
+
+      const lblImpTitle = document.getElementById('lbl-import-title');
+      const lblImpSub = document.getElementById('lbl-import-sub');
+      if (lblImpTitle) lblImpTitle.textContent = isEn ? `Import: Payments` : `ইম্পোর্ট: পেমেন্ট`;
+      if (lblImpSub) lblImpSub.textContent = isEn ? `bKash, Nagad & bank statement` : `bKash, Nagad ও ব্যাংক লেনদেন`;
+
+      const lblFcTitle = document.getElementById('lbl-fc-title');
+      const lblPdfBtn = document.getElementById('lbl-pdf-btn');
+      const lblChartCap = document.getElementById('lbl-chart-cap');
+      const lblLegIn = document.getElementById('lbl-leg-in');
+      const lblLegOut = document.getElementById('lbl-leg-out');
+      const lblRentTitle = document.getElementById('lbl-rent-title');
+      const lblRentSub = document.getElementById('lbl-rent-sub');
+      if (lblFcTitle) lblFcTitle.textContent = isEn ? `Forecast: Next 4 weeks` : `আগামী ৪ সপ্তাহের নিট ক্যাশ`;
+      if (lblPdfBtn) lblPdfBtn.textContent = isEn ? `Export PDF` : `PDF সামারি`;
+      if (lblChartCap) lblChartCap.textContent = isEn ? `Collections vs bills` : `আদায় বনাম বিল`;
+      if (lblLegIn) lblLegIn.textContent = isEn ? `Collections` : `আদায়`;
+      if (lblLegOut) lblLegOut.textContent = isEn ? `Bills` : `বিল`;
+      if (lblRentTitle) lblRentTitle.textContent = isEn ? `Wk 3: Shop rent & supplier bill` : `সপ্তাহ ৩: দোকান ভাড়া ও সাপ্লায়ার বিল`;
+      if (lblRentSub) lblRentSub.textContent = isEn ? `Simulate +৳ 45,000 upcoming bill` : `অতিরিক্ত ৳ ৪৫,০০০ বিল যোগ করে দেখুন`;
+
+      const navHome = document.getElementById('nav-lbl-home');
+      const navImp = document.getElementById('nav-lbl-import');
+      const navFc = document.getElementById('nav-lbl-forecast');
+      if (navHome) navHome.textContent = isEn ? `Dues` : `পাওনা`;
+      if (navImp) navImp.textContent = isEn ? `Import` : `ইম্পোর্ট`;
+      if (navFc) navFc.textContent = isEn ? `Forecast` : `পূর্বাভাস`;
+    }
+
+    function renderDuesList() {
+      const container = document.getElementById('dues-list-container');
+      const totalEl = document.getElementById('phone-total-owed');
+      const syncOwed = document.getElementById('sync-total-owed');
+      const syncRem = document.getElementById('sync-reminded-count');
+
+      const totalVal = getTotalOwed();
+      if (totalEl) totalEl.textContent = formatTaka(totalVal);
+      if (syncOwed) syncOwed.textContent = `৳ ${toBanglaDigits(totalVal)}`;
+
+      const remCount = appState.dues.filter(function(d) { return d.reminded; }).length;
+      if (syncRem) syncRem.textContent = `${toBanglaDigits(remCount)}টি দোকান`;
+
+      if (!container) return;
+      const isEn = appState.lang === 'en';
+      const filtered = appState.dues.filter(function(item) {
+        if (appState.dueFilter === 'overdue') return item.status === 'overdue' && item.amount > 0;
+        if (appState.dueFilter === 'reminded') return item.reminded;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="app-row-card"><span class="shop-meta">${isEn ? `No matching dues in this filter.` : `এই ফিল্টারে কোনো বাকি নেই।`}</span></div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(function(item) {
+        const name = isEn ? item.nameEn : item.nameBn;
+        const note = isEn ? item.noteEn : item.noteBn;
+        const badgeClass = item.amount === 0 ? `ok` : (item.status === `overdue` ? `overdue` : `due-soon`);
+        const badgeText = item.amount === 0
+          ? (isEn ? `Paid` : `পরিশোধিত`)
+          : (item.status === `overdue` ? (isEn ? `Overdue` : `মেয়াদোত্তীর্ণ`) : (isEn ? `Upcoming` : `আসন্ন`));
+
+        const remindBtn = item.reminded
+          ? `<span class="mini-action-btn done">${isEn ? `Reminded via ${item.remindedVia} ✓` : `${item.remindedVia} রিমাইন্ডার গেছে ✓`}</span>`
+          : `<button type="button" class="mini-action-btn" onclick="toggleReminderDrawer(${item.id})">${isEn ? `Remind in 1 tap` : `১-ট্যাপ রিমাইন্ডার`}</button>`;
+
+        const drawer = appState.activeReminderId === item.id
+          ? `<div class="reminder-drawer">
+              <strong>${isEn ? `Polite reminder preview:` : `বিনয়ী তাগাদা মেসেজ:`}</strong>
+              <div class="reminder-msg-box">${isEn
+                ? `Assalamu Alaikum ${name}, gentle reminder for your due balance of ${formatTaka(item.amount)}. Please pay via bKash/Nagad when convenient. — দেনা-পাওনা`
+                : `আসসালামু আলাইকুম ${name}, আপনার বকেয়া ${formatTaka(item.amount)} পরিশোধের জন্য বিনীত অনুরোধ রইল। সুবিধামতো bKash বা Nagad-এ পাঠিয়ে দিতে পারেন। — দেনা-পাওনা`}</div>
+              <div class="reminder-btns">
+                <button type="button" class="mini-action-btn" onclick="sendReminder(${item.id}, 'WhatsApp')">${isEn ? `Send WhatsApp` : `WhatsApp পাঠান`}</button>
+                <button type="button" class="mini-action-btn neutral" onclick="sendReminder(${item.id}, 'SMS')">${isEn ? `Send SMS` : `SMS পাঠান`}</button>
+              </div>
+            </div>`
+          : ``;
+
+        return `<div class="app-row-card">
+          <div class="app-row-top">
+            <div class="shop-ident">
+              <span class="shop-monogram" aria-hidden="true">${item.code}</span>
+              <div style="min-width: 0;">
+                <div class="shop-name">${name}</div>
+                <div class="shop-meta">${note}</div>
+              </div>
+            </div>
+            <div class="shop-amount-col">
+              <div class="shop-amount">${formatTaka(item.amount)}</div>
+              <span class="status-pill ${badgeClass}">${badgeText}</span>
+            </div>
+          </div>
+          <div class="app-row-actions">
+            <span class="shop-meta">${isEn ? `Tap to send polite due message` : `WhatsApp বা SMS-এ পাঠান`}</span>
+            ${remindBtn}
+          </div>
+          ${drawer}
+        </div>`;
+      }).join('');
+    }
+
+    function renderImportsList() {
+      const container = document.getElementById('imports-list-container');
+      const badge = document.getElementById('import-matched-badge');
+      const syncMatched = document.getElementById('sync-matched-count');
+      const matchedCount = appState.imports.filter(function(i) { return i.matched; }).length;
+      const isEn = appState.lang === 'en';
+
+      if (badge) badge.textContent = isEn ? `${matchedCount}/${appState.imports.length} matched` : `${toBanglaDigits(matchedCount)}/${toBanglaDigits(appState.imports.length)}টি ম্যাচ`;
+      if (syncMatched) syncMatched.textContent = `${toBanglaDigits(matchedCount)} / ${toBanglaDigits(appState.imports.length)}টি`;
+      if (!container) return;
+
+      const list = appState.imports.filter(function(imp) {
+        if (appState.importFilter === 'all') return true;
+        return imp.channel.toLowerCase() === appState.importFilter.toLowerCase();
+      });
+
+      const shopOptions = appState.dues.map(function(d) {
+        return `<option value="${d.id}">${isEn ? d.nameEn : d.nameBn}</option>`;
+      }).join('');
+
+      container.innerHTML = list.map(function(imp) {
+        const matchName = isEn ? imp.suggestedEn : imp.suggestedBn;
+        let middleHtml = ``;
+        if (imp.matched) {
+          middleHtml = `<div class="shop-meta" style="color: var(--positive); font-weight: 600;">${isEn ? `Matched to ${matchName} ✓` : `${matchName}-এর হিসাবে যুক্ত হয়েছে ✓`}</div>`;
+        } else if (imp.unmatched) {
+          middleHtml = `<div>
+            <label for="match-select-${imp.id}" class="app-field-label">${isEn ? `Unmatched item — pick customer` : `মেলেনি — গ্রাহক নির্বাচন করুন`}</label>
+            <select id="match-select-${imp.id}" class="app-input">${shopOptions}</select>
+          </div>`;
+        } else {
+          middleHtml = `<div class="shop-meta">${isEn ? `Suggested match:` : `সম্ভাব্য মিল:`} <strong>${matchName}</strong></div>`;
+        }
+
+        const actionBtn = imp.matched
+          ? `<span class="mini-action-btn done">${isEn ? `Confirmed ✓` : `নিশ্চিত ✓`}</span>`
+          : `<button type="button" class="mini-action-btn" onclick="confirmImportMatch(${imp.id})">${isEn ? `Confirm match` : `ম্যাচ নিশ্চিত করুন`}</button>`;
+
+        return `<div class="app-row-card">
+          <div class="app-row-top">
+            <div>
+              <span class="status-pill ${imp.unmatched && !imp.matched ? `due-soon` : `info`}">${imp.channel} • ${imp.trxId}</span>
+            </div>
+            <div class="shop-amount">${formatTaka(imp.amount)}</div>
+          </div>
+          ${middleHtml}
+          <div class="app-row-actions">
+            <span class="shop-meta">${imp.unmatched && !imp.matched ? (isEn ? `Flagged for manual match` : `ম্যানুয়াল ম্যাচ প্রয়োজন`) : (isEn ? `Statement entry` : `স্টেটমেন্ট এন্ট্রি`)}</span>
+            ${actionBtn}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderForecast() {
+      const barsEl = document.getElementById('forecast-bars');
+      const netEl = document.getElementById('fc-net-cash');
+      const warnEl = document.getElementById('fc-warning-banner');
+      const warnText = document.getElementById('fc-warning-text');
+      const detailEl = document.getElementById('week-detail-box');
+      const toggleBtn = document.getElementById('toggle-extra-bill');
+      const isEn = appState.lang === 'en';
+
+      const computedWeeks = appState.weeks.map(function(w) {
+        const extra = (w.idx === 2 && appState.extraBillEnabled) ? 45000 : 0;
+        return {
+          idx: w.idx,
+          label: isEn ? w.labelEn : w.labelBn,
+          inAmt: w.inAmt,
+          outAmt: w.outAmt + extra
+        };
+      });
+
+      const totalIn = computedWeeks.reduce(function(s, w) { return s + w.inAmt; }, 0);
+      const totalOut = computedWeeks.reduce(function(s, w) { return s + w.outAmt; }, 0);
+      const netCash = totalIn - totalOut;
+
+      if (netEl) netEl.textContent = formatTaka(netCash);
+      if (warnEl) warnEl.style.display = appState.extraBillEnabled ? 'flex' : 'none';
+      if (warnText) {
+        warnText.textContent = isEn
+          ? `Warning: Cash shortfall of ৳ 27,000 projected in Week 3`
+          : `সতর্কতা: ৩য় সপ্তাহে ৳ ২৭,০০০ নগদ ঘাটতির ঝুঁকি`;
+      }
+      if (toggleBtn) {
+        toggleBtn.textContent = appState.extraBillEnabled
+          ? (isEn ? `Remove bill` : `বিল সরান ✓`)
+          : (isEn ? `Add bill` : `বিল যোগ করুন`);
+        toggleBtn.classList.toggle('done', appState.extraBillEnabled);
+      }
+
+      const maxVal = 65000;
+      if (barsEl) {
+        barsEl.innerHTML = computedWeeks.map(function(w) {
+          const inH = Math.max(14, Math.round((w.inAmt / maxVal) * 86));
+          const outH = Math.max(14, Math.round((w.outAmt / maxVal) * 86));
+          return `<button type="button" class="week-col ${appState.selectedWeek === w.idx ? `selected` : ``}" onclick="selectForecastWeek(${w.idx})">
+            <div class="bar-pair">
+              <div class="vbar in" style="height: ${inH}px;" aria-hidden="true"></div>
+              <div class="vbar out" style="height: ${outH}px;" aria-hidden="true"></div>
+            </div>
+            <span class="week-col-lbl">${w.label}</span>
+          </button>`;
+        }).join('');
+      }
+
+      const sel = computedWeeks[appState.selectedWeek] || computedWeeks[0];
+      if (detailEl && sel) {
+        const diff = sel.inAmt - sel.outAmt;
+        const diffText = diff >= 0 ? `+${formatTaka(diff)}` : `-${formatTaka(Math.abs(diff))}`;
+        detailEl.textContent = isEn
+          ? `${sel.label}: Collections ${formatTaka(sel.inAmt)} • Bills ${formatTaka(sel.outAmt)} (Net ${diffText})`
+          : `${sel.label}: সম্ভাব্য আদায় ${formatTaka(sel.inAmt)} • বিল ${formatTaka(sel.outAmt)} (নিট ${diffText})`;
+      }
+    }
+
+    function renderAll() {
+      renderStaticLabels();
+      renderDuesList();
+      renderImportsList();
+      renderForecast();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function setAdFormat(fmt) {
+      appState.adFormat = fmt;
+      const canvas = document.getElementById('ad-canvas');
+      const badge = document.getElementById('ad-format-badge');
+      const body = document.getElementById('ad-body');
+      const detail = document.getElementById('ad-channel-detail');
+      const btns = ['feed', 'whatsapp', 'flyer'];
+      btns.forEach(function(b) {
+        const btnEl = document.getElementById(`ad-btn-${b}`);
+        if (btnEl) btnEl.classList.toggle('active', b === fmt);
+      });
+      if (!canvas || !badge || !body || !detail) return;
+
+      canvas.classList.remove('format-whatsapp', 'format-flyer');
+      if (fmt === 'whatsapp') {
+        canvas.classList.add('format-whatsapp');
+        badge.textContent = `WhatsApp Group Promo`;
+        body.textContent = `পাইকারি ও খুচরা দোকানের ভাইয়েরা—হোয়াটসঅ্যাপ ও খাতায় বাকি খুঁজতে খুঁজতে ক্লান্ত? সব বাকি ও bKash পেমেন্ট দেখুন এক জায়গায়। প্রথম ২০ জন গ্রাহক ফ্রি।`;
+        detail.textContent = `পাইকারি বাজার ও ব্যবসায়ী সমিতির হোয়াটসঅ্যাপ গ্রুপে ১-ট্যাপ শেয়ারযোগ্য প্রোমো কার্ড ও বাংলা ডেমো লিংক।`;
+      } else if (fmt === 'flyer') {
+        canvas.classList.add('format-flyer');
+        badge.textContent = `Wholesale Market Digital Flyer`;
+        body.textContent = `কে কত দেবে, কার কাছে কত পাওনা? ৩০ সেকেন্ডে বাকি লিখুন, bKash/Nagad স্টেটমেন্ট ম্যাচ করুন এবং আগামী ৪ সপ্তাহের ক্যাশ দেখুন।`;
+        detail.textContent = `ঢাকার চকবাজার, মৌলভীবাজার ও কাওরান বাজারের পাইকারি ট্রেডার ও ফার্মেসি মার্কেটে ডিজিটাল স্ক্রিন ফ্লায়ার।`;
+      } else {
+        badge.textContent = `Facebook / Instagram Ad`;
+        body.textContent = `প্রতিটি বাকি বিক্রি এবং প্রতিটি bKash ও Nagad পেমেন্ট দেখুন এক জায়গায়। প্রথম ২০ জন গ্রাহক সম্পূর্ণ ফ্রি।`;
+        detail.textContent = `লোকাল ট্রেডার ফেসবুক গ্রুপ ও পাইকারি বাজারের হোয়াটসঅ্যাপ গ্রুপে বাংলায় শর্ট UI ডেমো ভিডিও।`;
+      }
+    }
+
+    function selectPricingTier(tierKey) {
+      appState.selectedTier = tierKey;
+      const tiers = ['free', 'starter', 'growth', 'pro'];
+      tiers.forEach(function(t) {
+        const card = document.getElementById(`tier-card-${t}`);
+        if (card) card.classList.toggle('is-selected', t === tierKey);
+      });
+      const planSelect = document.getElementById('trial-plan');
+      if (planSelect) planSelect.value = tierKey;
+      const ctaSection = document.getElementById('trial-cta');
+      if (ctaSection) ctaSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function syncPlanFromSelect(tierKey) {
+      appState.selectedTier = tierKey;
+      const tiers = ['free', 'starter', 'growth', 'pro'];
+      tiers.forEach(function(t) {
+        const card = document.getElementById(`tier-card-${t}`);
+        if (card) card.classList.toggle('is-selected', t === tierKey);
+      });
+    }
+
+    function launchTrialPreview() {
+      const shopInput = document.getElementById('trial-shop-name');
+      const segSelect = document.getElementById('trial-segment');
+      const planSelect = document.getElementById('trial-plan');
+      const errEl = document.getElementById('trial-error');
+      const resCard = document.getElementById('trial-result');
+      const resTitle = document.getElementById('trial-res-title');
+      const resBadge = document.getElementById('trial-res-badge');
+      const resDesc = document.getElementById('trial-res-desc');
+
+      if (!shopInput || !segSelect || !planSelect || !errEl || !resCard || !resTitle || !resBadge || !resDesc) return;
+
+      const shopName = shopInput.value.trim();
+      if (shopName.length < 2) {
+        errEl.textContent = `অনুগ্রহ করে আপনার দোকান বা ব্যবসার নাম লিখুন (কমপক্ষে ২ অক্ষর)।`;
+        shopInput.focus();
+        return;
+      }
+      errEl.textContent = ``;
+
+      const planLabels = {
+        free: `ফ্রি (৳০ • সর্বোচ্চ ২০ গ্রাহক)`,
+        starter: `স্টার্টার (৳৩০০ / মাস • আনলিমিটেড গ্রাহক)`,
+        growth: `গ্রোথ (৳৮০০ / মাস • WhatsApp ও পূর্বাভাস)`,
+        pro: `প্রো (৳১,৫০০ / মাস • একাধিক দোকান)`
+      };
+      const segLabels = {
+        wholesale: `পাইকারি ও ডিস্ট্রিবিউশন`,
+        pharmacy: `ফার্মেসি ও মেডিকেল স্টোর`,
+        restaurant: `রেস্টুরেন্ট ও ক্যাটারিং`,
+        service: `সার্ভিস ব্যবসা`
+      };
+
+      const selectedPlan = planSelect.value;
+      const selectedSeg = segSelect.value;
+
+      resTitle.textContent = `${shopName} — দেনা-পাওনা ওয়ার্কস্পেস`;
+      resBadge.textContent = planLabels[selectedPlan] || planLabels.growth;
+      resDesc.textContent = `“${segLabels[selectedSeg]}” ব্যবসার জন্য আপনার অ্যাকাউন্ট প্রোফাইল তৈরি হয়েছে। প্রথম ২০ জন গ্রাহক পর্যন্ত ফ্রি ব্যবহার করে দেখুন এবং পরে bKash বা Nagad-এ আপগ্রেড করুন।`;
+      resCard.classList.add('visible');
+    }
+
+    function initScrollReveals() {
+      const nodes = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        nodes.forEach(function(n) { n.classList.add('is-visible'); });
+        return;
+      }
+      const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      nodes.forEach(function(n) { observer.observe(n); });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderAll();
+      initScrollReveals();
+    });
+  </script>
+</body>
+</html>
